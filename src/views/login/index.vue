@@ -1,29 +1,64 @@
 <template>
   <div class="login-container">
-    <el-form :model="form" class="login-form">
+    <el-form :model="form" class="login-form" :rules="rules" ref="formRef">
       <div class="title-container">
         <h3 class="title">用户登录</h3>
       </div>
-      <el-form-item>
+      <el-form-item prop="name">
         <svg-icon icon="user" class="svg-container"></svg-icon>
-        <el-input v-model="form.name" />
+        <el-input v-model="form.username" />
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="password">
         <svg-icon icon="password" class="svg-container"></svg-icon>
-        <el-input v-model="form.password" />
+        <el-input v-model="form.password" :type="passwordType" />
+        <svg-icon
+          :icon="passwordType === 'password' ? 'eye' : 'eye-open'"
+          @click="changeType"
+        ></svg-icon>
       </el-form-item>
-      <el-button type="success" class="login-button">用户登录</el-button>
+      <el-button type="success" class="login-button" @click="handleLogin"
+        >用户登录</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useStore } from 'vuex'
+
+const store = useStore()
+const formRef = ref(null)
 
 const form = ref({
-  name: '',
+  username: '',
   password: ''
 })
+
+const rules = ref({
+  username: [{ required: true, message: '请输入用户名称', trigger: 'blur' }],
+  password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }]
+})
+
+const handleLogin = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      store.dispatch('app/login', form.value)
+    } else {
+      console.log('提交出错！')
+      return false
+    }
+  })
+}
+
+const passwordType = ref('password')
+const changeType = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
+}
 </script>
 
 <style lang="scss" scoped>
