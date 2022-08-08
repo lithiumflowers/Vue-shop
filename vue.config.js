@@ -1,6 +1,7 @@
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+const CircularDependencyPlugin = require('circular-dependency-plugin')
 
 const path = require('path')
 function resolve(dir) {
@@ -77,6 +78,16 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      }
+    }
+  },
+  css: {
+    loaderOptions: {
+      scss: {
+        additionalData: `
+          @import '~@/styles/variables.scss';
+          @import "~@/styles/mixin.scss";
+        `
       }
     }
   }
