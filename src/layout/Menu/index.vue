@@ -25,7 +25,7 @@
         @click="savePath(it.path)"
         ><template #title>
           <el-icon><component :is="icon"></component></el-icon>
-          <span>{{ item.authName }}</span>
+          <span>{{ $t(`menus.${it.path}`) }}</span>
         </template></el-menu-item
       >
     </el-sub-menu>
